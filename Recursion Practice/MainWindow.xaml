@@ -15,14 +15,32 @@
                 <Label x:Name="lblFactorial" Content="The factorial is..." HorizontalAlignment="Left" VerticalAlignment="Top" Width="98" Height="55"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox x:Name="gbReverseArray" Header="Reverse Array" HorizontalAlignment="Left" Height="178" Margin="182,10,0,0" VerticalAlignment="Top" Width="322">
+        <GroupBox x:Name="gbReverseArray" Header="Reverse and Sort Array" HorizontalAlignment="Left" Height="178" Margin="182,10,0,0" VerticalAlignment="Top" Width="322">
             <StackPanel HorizontalAlignment="Left" Height="143" Margin="10,10,0,0" VerticalAlignment="Top" Width="293">
+
                 <TextBox x:Name="txtInitialArray" Height="23" TextWrapping="Wrap" Margin="0,6,0,0"/>
-                <Button x:Name="btnReverseArray" Content="Reverse Array" Margin="0,6" Click="btnReverseArray_Click"/>
+                <Grid>
+                    <Button x:Name="btnReverseArray" Content="Reverse Array" Margin="0,6,149,6" Click="btnReverseArray_Click" />
+                    <Button x:Name="btnSortArray" Content="Quick Sort Array" Margin="151,6,0,6" Click="btnSortArray_Click" />
+                </Grid>
+
                 <TextBox x:Name="txtReversedArray" Height="23" TextWrapping="Wrap"/>
-                <Label Content="# elements in array" Margin="0,0,-0.2,0"/>
-                <RadioButton x:Name="rbReverse19" Content="19" IsChecked="True" Checked="rbCheckedChanged"/>
-                <RadioButton x:Name="rbReverse20" Content="20" Checked="rbCheckedChanged"/>
+                <Grid>
+                    <StackPanel>
+                        <Label Content="# elements in array" Margin="0,0,0,0"/>
+                        <RadioButton x:Name="rbSize17" Content="17" Margin="0,0,162.8,0" Checked="rbArrayChanged"/>
+                        <RadioButton x:Name="rbSize18" Content="18" Margin="0,0,162.8,0" IsThreeState="True" Checked="rbArrayChanged"/>
+                    </StackPanel>
+                    <StackPanel Margin="151,0,0,0">
+                        <Label Content="Inital Array Format" />
+                        <RadioButton x:Name="rbSortSequential" GroupName="arrayType" Content="Sequential" Checked="rbArrayChanged"/>
+                        <RadioButton x:Name="rbSortRandom" GroupName="arrayType" Content="Random" Checked="rbArrayChanged" IsChecked="False"/>
+                    </StackPanel>
+
+
+                </Grid>
+
+
             </StackPanel>
         </GroupBox>
 

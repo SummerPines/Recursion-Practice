@@ -23,14 +23,18 @@ namespace Recursion_Practice {
         }
 
         //Class-level variables
-        private int[] arrayToReverse;
+        private int[] sortReverseArray;
 
 
         /// <summary>
         /// Create Arrays and structures needed for methods when window is loaded
         /// </summary>
         private void wdwLoaded(object sender, RoutedEventArgs e) {
-            createReverseArray();
+            rbSortRandom.IsChecked = false;
+            rbSortSequential.IsChecked = true;
+            rbSize17.IsChecked = true;
+            rbSize18.IsChecked = false;
+            createSortReverseArray();
         }
 
 
@@ -42,7 +46,7 @@ namespace Recursion_Practice {
         private void dispayArray(int[] array, TextBox textbox) {
 
             textbox.Text = "";
-            for (int i = 0; i < array.Length; i++ ) {
+            for (int i = 0; i < array.Length; i++) {
                 textbox.Text += array[i] + " ";
             }
         }
@@ -86,7 +90,7 @@ namespace Recursion_Practice {
         private int factorial(int num) {
 
             //base case: have added all numbers or 0 was entered
-            if (num < 1 || num==0)
+            if (num < 1 || num == 0)
                 return 1;
 
             return num * factorial(num - 1);
@@ -98,8 +102,8 @@ namespace Recursion_Practice {
         /// button handler to reverse an array
         /// </summary>
         private void btnReverseArray_Click(object sender, RoutedEventArgs e) {
-            reverseArray(arrayToReverse, 0);
-            dispayArray(arrayToReverse, txtReversedArray);
+            reverseArray(sortReverseArray, 0);
+            dispayArray(sortReverseArray, txtReversedArray);
         }
 
         /// <summary>
@@ -108,7 +112,7 @@ namespace Recursion_Practice {
         /// <typeparam name="T">the type of variables in the array</typeparam>
         /// <param name="array">the array to reverse</param>
         /// <param name="index">the index to begin reversing at</param>
-        private void reverseArray<T> (T[] array, int index) {
+        private void reverseArray<T>(T[] array, int index) {
 
             //base case: half of the array has been flipped
             if (index >= array.Length / 2)
@@ -122,27 +126,97 @@ namespace Recursion_Practice {
             //continue with remainder of array
             reverseArray(array, index + 1);
         }
+        #endregion Reverse Array
 
         /// <summary>
         /// button handler if radio button for reversed array size is changed
         /// </summary>
-        private void rbCheckedChanged(object sender, RoutedEventArgs e) {
-            createReverseArray();
+        private void rbArrayChanged(object sender, RoutedEventArgs e) {
+            createSortReverseArray();
         }
 
         /// <summary>
-        ///create a sorted array of sequential numbers needed for the reverse array section
+        ///create a sequential or random array of numbers needed for the reverse and quick sort array section
         /// </summary>
-        private void createReverseArray() {
+        private void createSortReverseArray() {
 
-            //size is determined by the radio buttons
-            int size = rbReverse19.IsChecked == true ? 19 : 20;
-            arrayToReverse = new int[size];
-            for (int i = 0; i < arrayToReverse.Length; i++)
-                arrayToReverse[i] = i;
-            dispayArray(arrayToReverse, txtInitialArray);
+            //size and sequence are determined by the radio buttons
+            int size = rbSize17.IsChecked == true ? 17 : 18;
+            bool random = rbSortRandom.IsChecked == true;
+            sortReverseArray = new int[size];
+
+            if (!random) {
+                for (int i = 0; i < sortReverseArray.Length; i++)
+                    sortReverseArray[i] = i;
+            }
+            else {
+                Random rnd = new Random();
+                for (int i = 0; i < sortReverseArray.Length; i++)
+                    sortReverseArray[i] = rnd.Next(0, 40);
+            }
+            dispayArray(sortReverseArray, txtInitialArray);
             txtReversedArray.Text = "";
         }
-        #endregion Reverse Array
+
+        #region Quick Sort
+
+        /// <summary>
+        /// button handler for Quick Sort button
+        /// Calls the quickSort Method with the entire array
+        /// </summary>
+        private void btnSortArray_Click(object sender, RoutedEventArgs e) {
+            quickSort(sortReverseArray, 0, sortReverseArray.Length - 1);
+            dispayArray(sortReverseArray, txtReversedArray);
+        }
+
+        /// <summary>
+        /// Recursive Quick Sort method
+        /// Sorts an array by 
+        /// 1. Selects a pivot value
+        /// 2. places all numbers less than the pivot to the left of the pivot and all numbers
+        ///     greater than the pivot to its right
+        /// 3. Recursively calls the quickSort again with each half of the array until the sort is complete
+        /// </summary>
+        /// <param name="array">the entire array to sort</param>
+        /// <param name="left">the left index of the section to sort</param>
+        /// <param name="right">the right index of the section to sort</param>
+        private void quickSort(int[] array, int left, int right) {
+
+            //base case: section has been sorted
+            if (left >= right)
+                return;
+
+            //the pivot is chosen as the middle number in the array and placed in the leftmost index
+            //This will speed up the sorting if the array is pre - sorted
+            int middleIndex = (right-left) / 2 + left;
+            int pivot = array[middleIndex];
+            array[middleIndex] = array[left];
+            array[left] = pivot;
+
+            //lastSmall indicates the index of the last number known to be smaller than the pivot
+            int lastSmall = left;
+
+            int temp;
+
+            //look for any numbers smaller than pivot and stack them at the front of the array
+            for (int i = left + 1; i <= right; i++) {
+                if (array[i] < pivot) {
+                    lastSmall++;
+                    temp = array[i];
+                    array[i] = array[lastSmall];
+                    array[lastSmall] = temp;
+                }
+            }
+
+            //put pivot in the correct place
+            temp = array[lastSmall];
+            array[lastSmall] = pivot;
+            array[left] = temp;
+
+            //recursively call the quickSort again with the left and right halves of the array;
+            quickSort(array, left, lastSmall - 1);
+            quickSort(array, lastSmall + 1, right);
+        }
+        #endregion  Quick Sort
     }
 }
