@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Recursion_Practice"
         mc:Ignorable="d"
-        Title="Recursive Functions" Height="450" Width="800">
+        Title="Recursive Functions" Height="450" Width="800" Loaded="wdwLoaded">
     <Grid RenderTransformOrigin="0.364,0.59">
 
         <GroupBox Name="gbFactorial" Header="Factorial" HorizontalAlignment="Left" Height="178" Margin="10,10,0,0" VerticalAlignment="Top" Width="156">
@@ -13,6 +13,16 @@
                 <TextBox x:Name="txtFactorialInput" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="68" Margin="0,6"/>
                 <Button x:Name="btnFactorial" Content="Find Factorial" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.369,0.285" Click="btnFactorial_Click" Margin="0,0,0,6"/>
                 <Label x:Name="lblFactorial" Content="The factorial is..." HorizontalAlignment="Left" VerticalAlignment="Top" Width="98" Height="55"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox x:Name="gbReverseArray" Header="Reverse Array" HorizontalAlignment="Left" Height="178" Margin="182,10,0,0" VerticalAlignment="Top" Width="322">
+            <StackPanel HorizontalAlignment="Left" Height="143" Margin="10,10,0,0" VerticalAlignment="Top" Width="293">
+                <TextBox x:Name="txtInitialArray" Height="23" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                <Button x:Name="btnReverseArray" Content="Reverse Array" Margin="0,6" Click="btnReverseArray_Click"/>
+                <TextBox x:Name="txtReversedArray" Height="23" TextWrapping="Wrap"/>
+                <Label Content="# elements in array" Margin="0,0,-0.2,0"/>
+                <RadioButton x:Name="rbReverse19" Content="19" IsChecked="True" Checked="rbCheckedChanged"/>
+                <RadioButton x:Name="rbReverse20" Content="20" Checked="rbCheckedChanged"/>
             </StackPanel>
         </GroupBox>
 
