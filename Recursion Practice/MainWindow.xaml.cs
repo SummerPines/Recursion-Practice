@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Recursion_Practice {
     /// <summary>
@@ -218,5 +207,57 @@ namespace Recursion_Practice {
             quickSort(array, lastSmall + 1, right);
         }
         #endregion  Quick Sort
+
+        #region All Letters
+
+        /// <summary>
+        /// button handler for testing all letters
+        /// </summary>
+        private void btnAllLetters_Click(object sender, RoutedEventArgs e) {
+            bool answer = allLettersIn2ndWord(txtLetters1.Text, txtLetters2.Text);
+            lblAllLettersAnswer.Content = answer ? "Yes" : "No";
+        }
+
+        /// <summary>
+        /// Recursive allLettersIn2ndWord
+        /// Determines if every letter from the first word can be found in the second word
+        /// </summary>
+        /// <param name="word1">1st word (provides letters)</param>
+        /// <param name="word2">2nd word (searched for letters)</param>
+        /// <returns>true if every letter from 1st word is found in 2nd word</returns>
+        private bool allLettersIn2ndWord(string word1, string word2) {
+
+            //base case #1: Every letter in word 1 has been tested
+            if (word1.Length <= 0)
+                return true;
+
+            //base case #2: A letter was found that was not in word 2
+            if (!isLetterInWord(word1[0], word2))
+                return false;
+
+            //recursively search the rest of the string
+            return allLettersIn2ndWord(word1.Substring(1), word2);
+
+        }
+
+        /// <summary>
+        /// isLetterInWord
+        /// Determine if a particular character is in a word
+        /// </summary>
+        /// <param name="letter">the char to check for</param>
+        /// <param name="word">the word to search</param>
+        /// <returns>true if found</returns>
+        private bool isLetterInWord(char letter, string word) {
+
+            //string is empty
+            if (word.Length <= 0)
+                return false;
+            //letter is found
+            if (word.IndexOf(letter) >= 0)
+                return true;
+            //letter is not found
+            return false;
+        }
+        #endregion All Letters
     }
 }
