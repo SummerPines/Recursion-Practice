@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
+using System.Windows.Media;
 
 namespace Recursion_Practice {
     /// <summary>
+    /// Practice creating recursive methods
+    /// M. Moody 10/2018
     /// Interaction logic for MainWindow.xaml
+    /// 
     /// </summary>
     public partial class MainWindow : Window {
         public MainWindow() {
@@ -259,5 +264,114 @@ namespace Recursion_Practice {
             return false;
         }
         #endregion All Letters
+
+        #region Sierpinski
+        //Button handler for Sierpinski Triangle
+        //Reads controls and calls the wrapper function with side length of 300
+        private void btnSierpinski_Click(object sender, RoutedEventArgs e) {
+
+            cvSierpinski.Children.Clear();
+
+            int order = (int)sldSierpinski.Value;
+            siepinskiWrapper(order, 300);
+        }
+
+        /// <summary>
+        /// Wrapper for recursive method
+        /// </summary>
+        /// <param name="order">the order to create</param>
+        /// <param name="sidelen">the original side length</param>
+        private void siepinskiWrapper(int order, double sidelen) {
+
+            //Sierpinski of order 0 is just a triangle
+            if (rbSierpinski.IsChecked == true) {
+                if (order == 0)
+                    drawTriangle(sidelen, 0, 300);
+                else {
+                    //double sierSideLen = sidelen / (2 * order);
+                    recursiveSubDivideTriangle(sidelen, 0, 300, order);
+                }
+            }
+            else {
+                //Divided triangle
+                double divSideLength = sidelen / (order + 1);
+                recursiveMakeDivided(divSideLength, 0, 300, order);
+            }
+        }
+
+        /// <summary>
+        /// Recursively draws a sierpinski triangle
+        /// Takes each triangle and divides it into 3 smaller traingles
+        /// calls the same function with each of the smaller triangles until order 0 is reached
+        /// </summary>
+        /// <param name="sideLen">The length of each side</param>
+        /// <param name="LLx">lower left x coordinate</param>
+        /// <param name="LLy">lower left y coordinate</param>
+        /// <param name="order">the order of this particular triangle</param>
+        private void recursiveSubDivideTriangle(double sideLen, double LLx, double LLy, int order) {
+
+            //Base Case: Order 0 has been reached, draw the triangle
+            if (order == 0) {
+                drawTriangle(sideLen, LLx, LLy);
+                return;
+            }
+
+            sideLen = sideLen / 2;
+            int leftOrder = order, rightOrder = order, topOrder = order;
+            double height = Math.Sqrt(sideLen * sideLen - sideLen / 2 * sideLen / 2);
+
+            //Break into 3 smaller triangles and subdivide them
+            recursiveSubDivideTriangle(sideLen, LLx, LLy, --leftOrder);
+            recursiveSubDivideTriangle(sideLen, LLx + sideLen, LLy, --rightOrder);
+            recursiveSubDivideTriangle(sideLen, LLx + sideLen / 2, LLy - height, --topOrder);
+        }
+
+        /// <summary>
+        /// Recursively draws a divided triangle
+        /// Creates a triangle from repeated smaller triangles
+        /// </summary>
+        /// <param name="sideLen">The length of each side</param>
+        /// <param name="LLx">lower left x coordinate</param>
+        /// <param name="LLy">lower left y coordinate</param>
+        /// <param name="order">the order of this particular triangle</param>
+        private void recursiveMakeDivided(double sideLen, double LLx, double LLy, int order) {
+            if (order < 0)
+                return;
+
+            int rightOrder = order, topOrder = order;
+
+            //draw triangle
+            double height =drawTriangle(sideLen, LLx, LLy);
+
+
+            //draw right triangle
+            recursiveMakeDivided(sideLen, LLx + sideLen, LLy, --rightOrder);
+
+            //draw top triangle
+            recursiveMakeDivided(sideLen, LLx + sideLen / 2, LLy - height, --topOrder);
+        }
+
+        //
+        /// <summary>
+        /// Actually draws the triangle to the canvas using a Polygon class
+        /// </summary>
+        /// <param name="sideLen">the length of each side</param>
+        /// <param name="LLx">lower left x coordinate</param>
+        /// <param name="LLy">lower left y coordinate</param>
+        /// <returns>the height of the triangle so it does not have to be computed later</returns>
+        private double drawTriangle(double sideLen, double LLx, double LLy) { 
+
+            Polygon triangle = new Polygon();
+
+            triangle.Stroke = Brushes.DarkCyan;
+            triangle.StrokeThickness = 1;
+
+            double height = Math.Sqrt(sideLen * sideLen - sideLen / 2 * sideLen / 2);
+            triangle.Points = new PointCollection() { new Point(LLx,LLy), new Point(LLx + sideLen,LLy), new Point(LLx + sideLen/2, LLy - height) };
+
+            cvSierpinski.Children.Add(triangle);
+            return height;
+        }
+        #endregion Sierpinski
     }
 }
