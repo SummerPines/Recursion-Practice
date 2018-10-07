@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Recursion_Practice {
     /// <summary>
@@ -17,7 +18,8 @@ namespace Recursion_Practice {
         }
 
         //Class-level variables
-        private int[] sortReverseArray;
+        private int[] initialArray;
+        private Stack initialStack;
 
 
         /// <summary>
@@ -28,37 +30,8 @@ namespace Recursion_Practice {
             rbSortSequential.IsChecked = true;
             rbSize17.IsChecked = true;
             rbSize18.IsChecked = false;
-            createSortReverseArray();
-        }
-
-
-        /// <summary>
-        /// Display a 1D array in a provided textbox
-        /// </summary>
-        /// <param name="array">a 1D array</param>
-        /// <param name="textbox">the textbox to display in</param>
-        private void dispayArray(int[] array, TextBox textbox) {
-
-            textbox.Text = "";
-            for (int i = 0; i < array.Length; i++) {
-                textbox.Text += array[i] + " ";
-            }
-        }
-
-        /// <summary>
-        /// Display a 2D array in a provided textbox
-        /// </summary>
-        /// <param name="array">a 2D array</param>
-        /// <param name="textbox">the textbox to display in</param>
-        private void dispayArray(int[,] array, TextBlock textblock) {
-
-            textblock.Text = "";
-            for (int r = 0; r < array.GetLength(0); r++) {
-                for (int c = 0; c < array.GetLength(1); c++) {
-                    textblock.Text += array[r, c].ToString().PadLeft(3);
-                }
-                textblock.Text += "\r\n";
-            }
+            createInitialArray();
+            createInitialStack();
         }
 
         #region Factorial
@@ -96,8 +69,8 @@ namespace Recursion_Practice {
         /// button handler to reverse an array
         /// </summary>
         private void btnReverseArray_Click(object sender, RoutedEventArgs e) {
-            reverseArray(sortReverseArray, 0);
-            dispayArray(sortReverseArray, txtReversedArray);
+            reverseArray(initialArray, 0);
+            dispayArray(initialArray, txtReversedArray);
         }
 
         /// <summary>
@@ -120,37 +93,50 @@ namespace Recursion_Practice {
             //continue with remainder of array
             reverseArray(array, index + 1);
         }
-        #endregion Reverse Array
 
         /// <summary>
         /// button handler if radio button for reversed array size is changed
         /// </summary>
         private void rbArrayChanged(object sender, RoutedEventArgs e) {
-            createSortReverseArray();
+            createInitialArray();
         }
 
         /// <summary>
         ///create a sequential or random array of numbers needed for the reverse and quick sort array section
         /// </summary>
-        private void createSortReverseArray() {
+        private void createInitialArray() {
 
             //size and sequence are determined by the radio buttons
             int size = rbSize17.IsChecked == true ? 17 : 18;
             bool random = rbSortRandom.IsChecked == true;
-            sortReverseArray = new int[size];
+            initialArray = new int[size];
 
             if (!random) {
-                for (int i = 0; i < sortReverseArray.Length; i++)
-                    sortReverseArray[i] = i;
+                for (int i = 0; i < initialArray.Length; i++)
+                    initialArray[i] = i;
             }
             else {
                 Random rnd = new Random();
-                for (int i = 0; i < sortReverseArray.Length; i++)
-                    sortReverseArray[i] = rnd.Next(0, 40);
+                for (int i = 0; i < initialArray.Length; i++)
+                    initialArray[i] = rnd.Next(0, 40);
             }
-            dispayArray(sortReverseArray, txtInitialArray);
+            dispayArray(initialArray, txtInitialArray);
             txtReversedArray.Text = "";
         }
+
+        /// <summary>
+        /// Display a 1D array in a provided textbox
+        /// </summary>
+        /// <param name="array">a 1D array</param>
+        /// <param name="textbox">the textbox to display in</param>
+        private void dispayArray(int[] array, TextBox textbox) {
+
+            textbox.Text = "";
+            for (int i = 0; i < array.Length; i++) {
+                textbox.Text += array[i] + " ";
+            }
+        }
+        #endregion Reverse Array
 
         #region Quick Sort
 
@@ -159,8 +145,8 @@ namespace Recursion_Practice {
         /// Calls the quickSort Method with the entire array
         /// </summary>
         private void btnSortArray_Click(object sender, RoutedEventArgs e) {
-            quickSort(sortReverseArray, 0, sortReverseArray.Length - 1);
-            dispayArray(sortReverseArray, txtReversedArray);
+            quickSort(initialArray, 0, initialArray.Length - 1);
+            dispayArray(initialArray, txtReversedArray);
         }
 
         /// <summary>
@@ -182,7 +168,7 @@ namespace Recursion_Practice {
 
             //the pivot is chosen as the middle number in the array and placed in the leftmost index
             //This will speed up the sorting if the array is pre - sorted
-            int middleIndex = (right-left) / 2 + left;
+            int middleIndex = (right - left) / 2 + left;
             int pivot = array[middleIndex];
             array[middleIndex] = array[left];
             array[left] = pivot;
@@ -341,7 +327,7 @@ namespace Recursion_Practice {
             int rightOrder = order, topOrder = order;
 
             //draw triangle
-            double height =drawTriangle(sideLen, LLx, LLy);
+            double height = drawTriangle(sideLen, LLx, LLy);
 
 
             //draw right triangle
@@ -359,7 +345,7 @@ namespace Recursion_Practice {
         /// <param name="LLx">lower left x coordinate</param>
         /// <param name="LLy">lower left y coordinate</param>
         /// <returns>the height of the triangle so it does not have to be computed later</returns>
-        private double drawTriangle(double sideLen, double LLx, double LLy) { 
+        private double drawTriangle(double sideLen, double LLx, double LLy) {
 
             Polygon triangle = new Polygon();
 
@@ -367,11 +353,163 @@ namespace Recursion_Practice {
             triangle.StrokeThickness = 1;
 
             double height = Math.Sqrt(sideLen * sideLen - sideLen / 2 * sideLen / 2);
-            triangle.Points = new PointCollection() { new Point(LLx,LLy), new Point(LLx + sideLen,LLy), new Point(LLx + sideLen/2, LLy - height) };
+            triangle.Points = new PointCollection() { new Point(LLx, LLy), new Point(LLx + sideLen, LLy), new Point(LLx + sideLen / 2, LLy - height) };
 
             cvSierpinski.Children.Add(triangle);
             return height;
         }
         #endregion Sierpinski
+
+        #region Stacks
+
+        //Create a new stack with random numbers
+        private void createInitialStack() {
+            initialStack = new Stack();
+
+            Random rnd = new Random();
+            for (int i = 0; i < 15; i++)
+                initialStack.Push(rnd.Next(0, 100));
+
+            displayStack(initialStack, txtInitialStack);
+        }
+
+        //Displays a stack in a given textbox
+        private void displayStack(Stack stack, TextBox textbox) {
+
+            textbox.Text = "";
+            foreach (object item in stack) {
+                textbox.Text += item.ToString() + "\r\n";
+            }
+        }
+
+        /// <summary>
+        /// Button handler for the stacks
+        /// Determined which method should be called based on the check radio buttons
+        /// Calls methods to either reverse or sort stack
+        /// </summary>
+        private void btnStack_Click(object sender, RoutedEventArgs e) {
+
+            if (initialStack.Count <= 0)
+                createInitialStack();
+
+            Stack finalStack = new Stack();
+
+            if (rbReverseStack.IsChecked == true) {
+                reverseStack(initialStack, finalStack);
+                displayStack(finalStack, txtFinalStack);
+            }
+            else {
+                //don't sort the initial stack, make a copy first
+                Stack initialCopy = copyStack(initialStack);
+                multipleBubblePasses(initialCopy, finalStack);
+                displayStack(initialCopy, txtFinalStack);
+            }
+        }
+
+        /// <summary>
+        /// recursively reverse a stack
+        /// pops the top item off the original stack and pushes it on the new stack
+        /// continues until the initial stack is empty
+        /// </summary>
+        /// <param name="originalStack">the initial stack</param>
+        /// <param name="newStack">the reversed stack</param>
+        private void reverseStack(Stack originalStack, Stack newStack) {
+            Object item;
+            try {
+                item = originalStack.Pop();
+            } catch (InvalidOperationException) {  //stack is empty
+                return;
+            }
+
+            newStack.Push(item);
+            reverseStack(originalStack, newStack);
+        }
+
+        //Make a deep copy of the stack
+        private Stack copyStack(Stack initialStack) {
+            Stack copy = new Stack();
+            foreach (Object obj in initialStack)
+                copy.Push(obj);
+
+            return copy;
+
+        }
+
+        /// <summary>
+        /// multipleBubblePasses
+        /// Controls the number of times the entire stack is passed through
+        /// 1. initiate a full single pass of the bubble sort
+        /// 2. If no swaps were made, it is complete
+        /// 3. Recursively proceed with the same stack
+        /// </summary>
+        /// <param name="sortStack">the stack to sort</param>
+        /// <param name="emptyStack">an empty stack to hold the more sorted stack</param>
+        /// <returns></returns>
+        private void multipleBubblePasses(Stack sortStack, Stack emptyStack) {
+
+            int changeCount = singleBubblePass(sortStack, emptyStack);
+
+            if (changeCount == 0) {
+                return;
+            }
+
+            //Clear the old stack and use it to hold the next new stack
+            multipleBubblePasses(sortStack, emptyStack);
+        }
+
+        /// <summary>
+        /// A single pass through the stack
+        /// 1. Remove the first 2 numbers from the stack
+        /// 2. Push the smaller # onto the new stack
+        /// 3. If the 2nd number is smaller, increase the count
+        /// 4. Push the larger # onto the old stack
+        /// 5. Recursively proceed through the stack
+        /// Note: The newStack is formed with the smaller numbers on the bottom,
+        /// after the bubble pass is completed, reverse the newStack so the smallest numbers are on top
+        /// The reversed stack returns to the multipleBubblePass method as the sortStack
+        /// </summary>
+        /// <param name="originalStack">the stack to sort</param>
+        /// <param name="newStack">the new, slightly more sorted stack</param>
+        /// <param name="count">the number of swaps made, used to indicate when the stack is sorted</param>
+        /// <returns></returns>
+        private int singleBubblePass(Stack originalStack, Stack newStack, int count = 0) {
+
+            int num1, num2;
+
+            try {
+                num1 = (int)originalStack.Pop();
+            }
+            //Stack is empty
+            catch (InvalidOperationException) {
+                reverseStack(newStack, originalStack);
+                return count;
+            }
+
+            try {
+                num2 = (int)originalStack.Pop();
+            }
+            //one number left, it has already been compared, just put it on the new stack
+            catch (InvalidOperationException) {
+                newStack.Push((Object)num1);
+                reverseStack(newStack, originalStack);
+
+                return count;
+            }
+
+            //put smaller number on the new stack
+            //put larger number on the old stack
+            if (num1 <= num2) {
+                newStack.Push(num1);
+                originalStack.Push(num2);
+            }
+            else {
+                newStack.Push(num2);
+                originalStack.Push(num1);
+                count++;
+            }
+
+            return singleBubblePass(originalStack, newStack, count);
+        }
+        #endregion Stacks
     }
 }
