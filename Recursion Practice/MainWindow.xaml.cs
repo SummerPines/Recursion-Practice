@@ -251,7 +251,7 @@ namespace Recursion_Practice {
         }
         #endregion All Letters
 
-        #region Sierpinski
+        #region Triangles
         //Button handler for Sierpinski Triangle
         //Reads controls and calls the wrapper function with side length of 300
         private void btnSierpinski_Click(object sender, RoutedEventArgs e) {
@@ -273,10 +273,14 @@ namespace Recursion_Practice {
             if (rbSierpinski.IsChecked == true) {
                 recursiveSubDivideTriangle(sidelen, 0, 300, order);
             }
-            else {
+            else if (rbDivided.IsChecked == true) {
                 //Divided triangle
                 double divSideLength = sidelen / (order + 1);
                 recursiveMakeDivided(divSideLength, 0, 300, order);
+            }
+            else {
+                //Koch Snowflake
+                startSnowflake(sidelen, 0, 270, order);
             }
         }
 
@@ -341,7 +345,7 @@ namespace Recursion_Practice {
             recursiveMakeDivided(sideLen, LLx + sideLen / 2, LLy - height,order-1);
         }
 
-        //
+        
         /// <summary>
         /// Actually draws the triangle to the canvas using a Polygon class
         /// </summary>
@@ -362,7 +366,91 @@ namespace Recursion_Practice {
             cvSierpinski.Children.Add(triangle);
             return height;
         }
-        #endregion Sierpinski
+
+        /// <summary>
+        /// startSnowflake
+        /// Create the recursive snowflake by starting 3 lines that make up the sides of the triangle
+        /// </summary>
+        private void startSnowflake(double sideLen, double LLx, double LLy, int order) {
+            //Right side of triangle
+            //Original angle is 60 deg = pi/3 radians
+            recursiveCalculateSnowflakeSide(sideLen, new Point(LLx, LLy) , order, Math.PI/3);
+
+            //Left side of triangle
+            //Top of triangle x = side * Cos(pi/3)
+            //Top of triangle y = side * Sin(pi/3)
+            //Original angle of left side from the top = 300 deg = 5pi/3 radians
+            Point top = new Point(LLx + sideLen * Math.Cos(Math.PI/ 3), LLy - sideLen * Math.Sin(Math.PI / 3));
+            recursiveCalculateSnowflakeSide(sideLen, top, order, 5* Math.PI/3);
+
+            //Bottom of Triangle
+            //Original angle from the start point is 0 degrees = 0 radians
+            Point right = new Point(LLx + sideLen, LLy);
+            recursiveCalculateSnowflakeSide(sideLen, right, order, Math.PI);
+
+        }
+
+        private void recursiveCalculateSnowflakeSide (double sideLen, Point startPoint, int order, double angle) {
+
+            //end case: order is zero, draw the lines
+            if (order <= 0) {
+                Point end = new Point(startPoint.X + sideLen * Math.Cos(angle), startPoint.Y - sideLen * Math.Sin(angle));
+                drawSnowflakeLine(sideLen, startPoint, end);
+                return;
+            }
+
+            //Split the sideLength into 3 parts
+            sideLen = sideLen / 3;
+
+            //Create 3 points on the original Line
+            Point[] points = createPointsArray(sideLen, startPoint, angle);
+                        
+            //break Line into 4 parts and  recursively continue with each part
+            //First line starts at points 0  and goes at the original angle for  sideLen
+            recursiveCalculateSnowflakeSide(sideLen, points[0], order - 1, angle);
+
+            //Second line starts at a point 1 and continues for a t at the original angle plus 60 degrees
+            recursiveCalculateSnowflakeSide(sideLen, points[1], order - 1, angle + Math.PI / 3);
+
+            //Third line starts at point 2 and continues for sideLen at an 300 degrees from the 
+            recursiveCalculateSnowflakeSide(sideLen, points[2], order - 1, angle + 5 * Math.PI / 3);
+
+            //Fourth line starts at point 3 and continues at the original angle
+            recursiveCalculateSnowflakeSide(sideLen, points[3], order - 1, angle);
+        }
+
+        //Draw an individual line to the canvas
+        private void drawSnowflakeLine(double length, Point start, Point end) {
+            Line line = new Line();
+
+            line.Stroke = Brushes.DarkCyan;
+            line.StrokeThickness = 1;
+
+            line.X1 = start.X;
+            line.Y1 = start.Y;
+
+            line.X2 = end.X;
+            line.Y2 = end.Y; //Subtract from Y because coordinate are at top left
+            
+            cvSierpinski.Children.Add(line);
+
+        }
+
+        //Create an array of points which will be used to connect the four lines
+        private Point[] createPointsArray(double sideLen, Point start, double angle) {
+            Point[] points = new Point[4];
+            //point 0 is starting point
+            points[0] = start;
+            //point 1 is 1/3 way up the original line
+            points[1] = new Point(start.X + sideLen * Math.Cos(angle), start.Y - sideLen * Math.Sin(angle));
+            //point 2 is 60 degrees off the original line
+            points[2] = new Point(points[1].X + sideLen * Math.Cos(angle + Math.PI / 3), points[1].Y - sideLen * Math.Sin(angle + Math.PI / 3));
+            //point 3 is 2/3 way up the original line
+            points[3] = new Point(points[1].X + sideLen * Math.Cos(angle), points[1].Y - sideLen * Math.Sin(angle));
+
+            return points;
+        }
+        #endregion Triangles
 
         #region Stacks
 

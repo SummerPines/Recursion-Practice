@@ -65,23 +65,30 @@
                 <Label x:Name="lblAllLettersAnswer" Content="" Margin="49,0"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox x:Name="gbSiepinski" Header="Sierpinski Triangle" HorizontalAlignment="Left" Height="430" Margin="10,193,0,0" VerticalAlignment="Top" Width="430" Background="#FFD6EDF9" BorderBrush="#FF0D0D0E">
+        <GroupBox x:Name="gbSiepinski" Header="Fractals / Triangles" HorizontalAlignment="Left" Height="430" Margin="10,193,0,0" VerticalAlignment="Top" Width="430" Background="#FFD6EDF9" BorderBrush="#FF0D0D0E">
             <Grid HorizontalAlignment="Left" Height="410" Margin="0,0,0,0" VerticalAlignment="Top" Width="430">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="155*"/>
                     <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="267*"/>
-                    <ColumnDefinition Width="13*"/>
+                    <ColumnDefinition Width="18*"/>
+                    <ColumnDefinition Width="12*"/>
+                    <ColumnDefinition Width="18*"/>
+                    <ColumnDefinition Width="14*"/>
+                    <ColumnDefinition Width="22*"/>
+                    <ColumnDefinition Width="305*"/>
+                    <ColumnDefinition Width="22*"/>
+                    <ColumnDefinition Width="20*"/>
                 </Grid.ColumnDefinitions>
-                <Canvas x:Name="cvSierpinski" HorizontalAlignment="Left" Height="342" VerticalAlignment="Top" Width="373" Margin="50,0,0,0" Grid.ColumnSpan="2"/>
-                <Slider x:Name="sldSierpinski" HorizontalAlignment="Left" Margin="103,361,0,0" VerticalAlignment="Top" Width="129" IsSnapToTickEnabled="True" Maximum="5" Value="5"/>
-                <TextBox x:Name="txtSierpinski" Text="{Binding ElementName=sldSierpinski, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="237,358,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="40" RenderTransformOrigin="-0.365,0.757"/>
-                <Button x:Name="btnSierpinski" Content="Create" HorizontalAlignment="Left" Margin="20,361,0,0" VerticalAlignment="Top" Width="68" Click="btnSierpinski_Click"/>
-                <Label Content="Order of Triangle" HorizontalAlignment="Left" Margin="114,376,0,0" VerticalAlignment="Top" Grid.RowSpan="2"/>
-                <RadioButton x:Name="rbDivided" Content="Divided Triangle" HorizontalAlignment="Left" Margin="293,358,0,0" VerticalAlignment="Top" IsChecked="True"/>
-                <RadioButton x:Name="rbSierpinski" Content="Sierpinski Triangle" HorizontalAlignment="Left" Margin="293,373,0,0" VerticalAlignment="Top"/>
+                <Canvas x:Name="cvSierpinski" HorizontalAlignment="Left" Height="342" VerticalAlignment="Top" Width="373" Margin="2.8,0,0,0" Grid.ColumnSpan="5" Grid.Column="3"/>
+                <Slider x:Name="sldSierpinski" HorizontalAlignment="Left" Margin="20,361,0,0" VerticalAlignment="Top" Width="129" IsSnapToTickEnabled="True" Maximum="5" Value="5" Grid.Column="5"/>
+                <TextBox x:Name="txtSierpinski" Text="{Binding ElementName=sldSierpinski, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="154,358,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="40" RenderTransformOrigin="-0.365,0.757" Grid.Column="5"/>
+                <Button x:Name="btnSierpinski" Content="Create" HorizontalAlignment="Left" Margin="2.4,361,0,0" VerticalAlignment="Top" Width="68" Click="btnSierpinski_Click" Grid.ColumnSpan="5" Grid.Column="1"/>
+                <Label Content="Order of Triangle" HorizontalAlignment="Left" Margin="31,376,0,0" VerticalAlignment="Top" Grid.RowSpan="2" Grid.Column="5"/>
+                <RadioButton x:Name="rbDivided" Content="Divided Triangle" HorizontalAlignment="Left" Margin="210,349,0,0" VerticalAlignment="Top" IsChecked="True" Grid.Column="5" Grid.ColumnSpan="2"/>
+                <RadioButton x:Name="rbSierpinski" Content="Sierpinski Triangle" HorizontalAlignment="Left" Margin="210,363,0,0" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="2"/>
+                <RadioButton x:Name="rbSnowflake" Content="Koch Snowflake" HorizontalAlignment="Left" Margin="210,378,0,0" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="2"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="Stacks" HorizontalAlignment="Left" Height="417" Margin="488,193,0,0" VerticalAlignment="Top" Width="209" Background="#FFD6EDF9" BorderBrush="Black">
