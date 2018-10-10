@@ -57,7 +57,7 @@ namespace Recursion_Practice {
         private int factorial(int num) {
 
             //base case: have added all numbers or 0 was entered
-            if (num < 1 || num == 0)
+            if (num <= 0)
                 return 1;
 
             return num * factorial(num - 1);
@@ -269,14 +269,9 @@ namespace Recursion_Practice {
         /// <param name="sidelen">the original side length</param>
         private void siepinskiWrapper(int order, double sidelen) {
 
-            //Sierpinski of order 0 is just a triangle
+            //Sierpinski parameters are (sideLength, lower left x, lower left y, order)
             if (rbSierpinski.IsChecked == true) {
-                if (order == 0)
-                    drawTriangle(sidelen, 0, 300);
-                else {
-                    //double sierSideLen = sidelen / (2 * order);
-                    recursiveSubDivideTriangle(sidelen, 0, 300, order);
-                }
+                recursiveSubDivideTriangle(sidelen, 0, 300, order);
             }
             else {
                 //Divided triangle
@@ -286,9 +281,15 @@ namespace Recursion_Practice {
         }
 
         /// <summary>
-        /// Recursively draws a sierpinski triangle
-        /// Takes each triangle and divides it into 3 smaller traingles
-        /// calls the same function with each of the smaller triangles until order 0 is reached
+        /// Recursively draws a Sierpinski triangle
+        /// A Sierpinski triangle is a fractal based on a triangle with four equal triangles inscribed in it. 
+        /// The central triangle is removed and each of the other three treated as the original was, and so on, 
+        /// creating an infinite regression in a finite space. (Dictionary definition)
+        /// This method:
+        /// 1: Determines if the order has reached 0, if so, draw the required triangle
+        /// 2. Reduces the length of the side by half
+        /// 3. Takes each triangle and divides it into 3 smaller triangles
+        /// 4. Calls the same function with each of the smaller triangles and one order less until order 0 is reached
         /// </summary>
         /// <param name="sideLen">The length of each side</param>
         /// <param name="LLx">lower left x coordinate</param>
@@ -303,38 +304,41 @@ namespace Recursion_Practice {
             }
 
             sideLen = sideLen / 2;
-            int leftOrder = order, rightOrder = order, topOrder = order;
+
             double height = Math.Sqrt(sideLen * sideLen - sideLen / 2 * sideLen / 2);
 
             //Break into 3 smaller triangles and subdivide them
-            recursiveSubDivideTriangle(sideLen, LLx, LLy, --leftOrder);
-            recursiveSubDivideTriangle(sideLen, LLx + sideLen, LLy, --rightOrder);
-            recursiveSubDivideTriangle(sideLen, LLx + sideLen / 2, LLy - height, --topOrder);
+            recursiveSubDivideTriangle(sideLen, LLx, LLy, order - 1);
+            recursiveSubDivideTriangle(sideLen, LLx + sideLen, LLy, order - 1);
+            recursiveSubDivideTriangle(sideLen, LLx + sideLen / 2, LLy - height, order - 1);
         }
 
         /// <summary>
         /// Recursively draws a divided triangle
-        /// Creates a triangle from repeated smaller triangles
+        /// Creates a larger equilateral triangle made up of smaller triangles.
+        /// The large triangle will have order+1 triangles on each side
         /// </summary>
         /// <param name="sideLen">The length of each side</param>
         /// <param name="LLx">lower left x coordinate</param>
         /// <param name="LLy">lower left y coordinate</param>
         /// <param name="order">the order of this particular triangle</param>
         private void recursiveMakeDivided(double sideLen, double LLx, double LLy, int order) {
+
+            //end case, triangle complete
             if (order < 0)
                 return;
 
-            int rightOrder = order, topOrder = order;
+            //int rightOrder = order, topOrder = order;
 
             //draw triangle
             double height = drawTriangle(sideLen, LLx, LLy);
 
 
             //draw right triangle
-            recursiveMakeDivided(sideLen, LLx + sideLen, LLy, --rightOrder);
+            recursiveMakeDivided(sideLen, LLx + sideLen, LLy, order-1);
 
             //draw top triangle
-            recursiveMakeDivided(sideLen, LLx + sideLen / 2, LLy - height, --topOrder);
+            recursiveMakeDivided(sideLen, LLx + sideLen / 2, LLy - height,order-1);
         }
 
         //
@@ -384,13 +388,15 @@ namespace Recursion_Practice {
 
         /// <summary>
         /// Button handler for the stacks
-        /// Determined which method should be called based on the check radio buttons
+        /// Determines which method should be called based on the checked radio buttons
         /// Calls methods to either reverse or sort stack
         /// </summary>
         private void btnStack_Click(object sender, RoutedEventArgs e) {
 
-            if (initialStack.Count <= 0)
+            if (initialStack.Count <= 0) {
                 createInitialStack();
+                MessageBox.Show("New Stack created");
+            }
 
             Stack finalStack = new Stack();
 
@@ -414,12 +420,11 @@ namespace Recursion_Practice {
         /// <param name="originalStack">the initial stack</param>
         /// <param name="newStack">the reversed stack</param>
         private void reverseStack(Stack originalStack, Stack newStack) {
-            Object item;
-            try {
-                item = originalStack.Pop();
-            } catch (InvalidOperationException) {  //stack is empty
+
+            //end case: stack is empty
+            if (originalStack.Count <= 0)
                 return;
-            }
+            Object item = originalStack.Pop();
 
             newStack.Push(item);
             reverseStack(originalStack, newStack);
@@ -474,27 +479,23 @@ namespace Recursion_Practice {
         /// <returns></returns>
         private int singleBubblePass(Stack originalStack, Stack newStack, int count = 0) {
 
-            int num1, num2;
-
-            try {
-                num1 = (int)originalStack.Pop();
-            }
-            //Stack is empty
-            catch (InvalidOperationException) {
+            //end case: bubble pass is completed reverse stack and return
+            if (originalStack.Count <= 0) {
                 reverseStack(newStack, originalStack);
                 return count;
             }
 
-            try {
-                num2 = (int)originalStack.Pop();
-            }
-            //one number left, it has already been compared, just put it on the new stack
-            catch (InvalidOperationException) {
+            int num1 = (int)originalStack.Pop();
+
+            //end case: only one number remained on the stack. It has already been compared.
+            //Put it on the new stack, reverse the new stack, and return
+            if (originalStack.Count <=0 ) {
                 newStack.Push((Object)num1);
                 reverseStack(newStack, originalStack);
-
                 return count;
             }
+
+            int num2 = (int)originalStack.Pop();
 
             //put smaller number on the new stack
             //put larger number on the old stack
